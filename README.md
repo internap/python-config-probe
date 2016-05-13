@@ -1,37 +1,54 @@
-# Mission
+Mission
+=======
 
-Provide an auto-discovery process of configurations for simple code use
+Provide an auto-discovery process of configurations for simple code use. Given a path and a list of pattern,
+the result config will be a shortcut to any config.
 
-# Predicted usage
+## Usage
 
-- Given a directory like
+Setup:
 
-        resources
-        +- config
-           +- management
-              +- billing.yaml
+    config = probe(
+        path="path/to/my/files",
+        patterns=["path/*/file.yaml"]
+    )
 
-- And a **billing.yaml** :
+Use it:
 
-        database:
-            user: "Johnny"
+    print config.mynamespace.key
 
-- When you setup your: **\_\_init__.py** to setup the quick-link
+## Parameters
 
-        config = ConfigProbe(
-            root_path="resources/",
-            patterns=["config/*/*.yaml]
-        )
+- **path**
 
-- anywhere else:
+    Initial path to probe.  Patterns will be tested against the file structure underneath the path
+    and it will be ignored in determining the namespacing.
 
-        import config
+- **patterns**
 
-        print config.management.billing.database.user
+    A list of file paths containing (or not) placeholders (*) to find where are the configuration files.
 
-        # should print "Johnny"
+    Each placeholder in the path will result in a namespace in the resulting config.  So let's say you have a pattern
+
+        dir1/*/dir2/*.yaml
+
+    If this pattern find the file : "dir1/**ns1**/dir2/**file**.yaml" that contains "key: 'value'", the resulting
+    config will be
+
+        config.ns1.file.key == "value"
+
+    now if the pattern was
+
+        dir1/ns1/dir2/file.yaml
+
+    for the same file, the resulting config would simply be
+
+        config.key == "value"
+
+    so you can use placeholders (*) to namespace the resulting config
 
 
-The patterns include * that will be used as a "namespace" and be part
-of the resulting object.  The remainder is the file loaded as a dict/object,
-structures like lists and dict will be available as dict/object or simple list.
+Contributing
+============
+
+Feel free to raise issues and send some pull request, we'll be happy to look at them!
