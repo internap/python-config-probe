@@ -1,0 +1,10 @@
+AUTHORS
+ChangeLog
+.idea
+.tox
+*.pyc
+*.coverage
+*.egg-info
+*.egg
+.eggs/
+.venv
