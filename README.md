@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/internap/python-config-probe.svg?branch=master)](https://travis-ci.org/internap/python-config-probe)
+[![PyPI version](https://badge.fury.io/py/python-config-probe.svg)](http://badge.fury.io/py/python-config-probe)
+
+
 Mission
 =======
 
