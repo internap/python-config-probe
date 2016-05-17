@@ -47,6 +47,20 @@ Use it:
 
     so you can use placeholders (*) to namespace the resulting config
 
+## Mocking the probing
+
+Your unit test can have your code use fake_probe instead to which to give a dict and it will appear as if it
+was just probed. Example:
+
+    config = fake_probe({
+        "ns1": {
+            "file": {
+                "key": "value"
+            }
+        }
+    })
+    # then
+    config.ns1.file.key == "value"
 
 Contributing
 ============

@@ -34,6 +34,10 @@ def probe(path, patterns):
     return munchify(config)
 
 
+def fake_probe(content):
+    return munchify(content)
+
+
 _parsers = {
     ".yaml": lambda f: yaml.load(f),
     ".json": lambda f: json.load(f),
