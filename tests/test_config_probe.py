@@ -15,27 +15,34 @@ class TestConfigProbe(unittest.TestCase):
 
     def test_single_file_with_namespace(self):
         config = probe(path=_dir("single-file-with-namespace"),
-                       patterns=["*.json"])
+                       patterns=["(*).json"])
 
         assert_that(config.stuff.key, is_("stuff-value"))
 
     def test_two_files_with_subdir_namespace(self):
         config = probe(path=_dir("two-files-with-subdir-namespace"),
-                       patterns=["*/*.yaml"])
+                       patterns=["(*)/(*).yaml"])
 
         assert_that(config.ns1.stuff.key1, is_("stuff from ns1"))
         assert_that(config.ns2.stuff.key2, is_("stuff from ns2"))
 
     def test_only_starred_parts_are_namespaced(self):
         config = probe(path=_dir("two-files-with-subdir-namespace"),
-                       patterns=["*/stuff.yaml"])
+                       patterns=["(*)/stuff.yaml"])
 
         assert_that(config.ns1.key1, is_("stuff from ns1"))
         assert_that(config.ns2.key2, is_("stuff from ns2"))
 
+    def test_using_only_a_star_does_not_count_toward_namespacing(self):
+        config = probe(path=_dir("two-files-with-subdir-namespace"),
+                       patterns=["*/stuff.yaml"])
+
+        assert_that(config.key1, is_("stuff from ns1"))
+        assert_that(config.key2, is_("stuff from ns2"))
+
     def test_multiple_patterns(self):
         config = probe(path=_dir("two-files-with-subdir-namespace"),
-                       patterns=["ns1/*.yaml", "*/stuff.yaml"])
+                       patterns=["ns1/(*).yaml", "(*)/stuff.yaml"])
 
         assert_that(config.stuff.key1, is_("stuff from ns1"))
         assert_that(config.ns2.key2, is_("stuff from ns2"))

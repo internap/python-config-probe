@@ -5,7 +5,7 @@ import os
 import yaml
 from munch import munchify
 
-NAMESPACE_PLACEHOLDER = "*"
+NAMESPACE_PLACEHOLDER = "(*)"
 
 
 def probe(path, patterns):
@@ -13,7 +13,8 @@ def probe(path, patterns):
 
     for pattern in patterns:
 
-        for config_file in glob.glob(os.path.join(path, pattern)):
+        glob_pattern = pattern.replace(NAMESPACE_PLACEHOLDER, "*")
+        for config_file in glob.glob(os.path.join(path, glob_pattern)):
             relevant_part_of_the_path = config_file[len(path) + 1:]
             path_parts, ext = os.path.splitext(relevant_part_of_the_path)
             path_matchers, _ = os.path.splitext(pattern)
@@ -24,7 +25,7 @@ def probe(path, patterns):
             path_parts, current_part = os.path.split(path_parts)
             path_matchers, matcher = os.path.split(path_matchers)
             while current_part is not "":
-                if matcher is NAMESPACE_PLACEHOLDER:
+                if matcher == NAMESPACE_PLACEHOLDER:
                     result = {current_part: result}
                 path_parts, current_part = os.path.split(path_parts)
                 path_matchers, matcher = os.path.split(path_matchers)
