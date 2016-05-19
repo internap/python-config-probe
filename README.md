@@ -14,7 +14,7 @@ Setup:
 
     config = probe(
         path="path/to/my/files",
-        patterns=["path/*/file.yaml"]
+        patterns=["path/(*)/file.yaml"]
     )
 
 Use it:
@@ -30,13 +30,13 @@ Use it:
 
 - **patterns**
 
-    A list of file paths containing (or not) placeholders (*) to find where are the configuration files.
+    A list of file paths containing (or not) placeholders "(\*)" o find where the configuration files are located.
 
     Each placeholder in the path will result in a namespace in the resulting config.  So let's say you have a pattern
 
-        dir1/*/dir2/*.yaml
+        dir1/(*)/dir2/(*).yaml
 
-    If this pattern find the file : "dir1/**ns1**/dir2/**file**.yaml" that contains "key: 'value'", the resulting
+    If this pattern finds the file : "dir1/**ns1**/dir2/**file**.yaml" that contains "key: 'value'", the resulting
     config will be
 
         config.ns1.file.key == "value"
@@ -49,7 +49,11 @@ Use it:
 
         config.key == "value"
 
-    so you can use placeholders (*) to namespace the resulting config
+    so you can use placeholders "(\*)" to namespace the resulting config and use "\*" without the parenthesis
+    to have a variable path without the namespacing
+
+        dir1/(*)/dir2/*.yaml
+        config.ns1.key == "value"
 
 ## Mocking the probing
 
