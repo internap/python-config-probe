@@ -31,6 +31,7 @@ Use it:
 - **patterns**
 
     A list of file paths containing (or not) placeholders "(\*)" o find where the configuration files are located.
+    The patterns definition order defines which keys has the priority, the last one being the most relevant.
 
     Each placeholder in the path will result in a namespace in the resulting config.  So let's say you have a pattern
 
