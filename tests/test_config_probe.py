@@ -63,6 +63,8 @@ class TestConfigProbe(unittest.TestCase):
                        patterns=["file2.yaml", "file1.yaml"])
         assert_that(config.key, is_("value1"))
 
+    def test_support_for_empty_files(self):
+        probe(path=_dir("empty-files"), patterns=["*.*"])
 
     def test_fake_probe(self):
         config = fake_probe({

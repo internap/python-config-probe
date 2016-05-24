@@ -34,7 +34,7 @@ def fake_probe(content):
 
 
 _parsers = {
-    ".yaml": lambda f: yaml.load(f),
+    ".yaml": lambda f: yaml.load(f) or {},
     ".json": lambda f: json.load(f),
 }
 
