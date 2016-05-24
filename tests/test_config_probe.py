@@ -47,6 +47,23 @@ class TestConfigProbe(unittest.TestCase):
         assert_that(config.stuff.key1, is_("stuff from ns1"))
         assert_that(config.ns2.key2, is_("stuff from ns2"))
 
+    def test_multiple_patterns_on_same_namespaces_should_merge_recursively(self):
+        config = probe(path=_dir("multi-level-files"),
+                       patterns=["(*)/(*).yaml", "(*)/subdir/(*).yaml"])
+
+        assert_that(config.ns1.stuff.content1.key1, is_("value1"))
+        assert_that(config.ns1.stuff.content2.key2, is_("value2"))
+
+    def test_pattern_order_defines_which_files_have_the_authority(self):
+        config = probe(path=_dir("key-override"),
+                       patterns=["file1.yaml", "file2.yaml"])
+        assert_that(config.key, is_("value2"))
+
+        config = probe(path=_dir("key-override"),
+                       patterns=["file2.yaml", "file1.yaml"])
+        assert_that(config.key, is_("value1"))
+
+
     def test_fake_probe(self):
         config = fake_probe({
             "key": "value",
