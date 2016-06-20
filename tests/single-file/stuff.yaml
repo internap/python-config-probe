@@ -1,2 +1,5 @@
 
 key: "stuff-value"
+fruits:
+  - Apple
+  - Orange

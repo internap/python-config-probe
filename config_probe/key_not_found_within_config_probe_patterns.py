@@ -1,0 +1,2 @@
+class KeyNotFoundWithinConfigProbePatterns(AttributeError):
+    pass

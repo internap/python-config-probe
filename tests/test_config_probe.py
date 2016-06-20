@@ -2,22 +2,32 @@ import unittest
 
 import os
 from config_probe import probe, fake_probe
-from hamcrest import is_, assert_that
+from config_probe.key_not_found_within_config_probe_patterns import KeyNotFoundWithinConfigProbePatterns
+from hamcrest import is_, assert_that, raises, calling
 
 
 class TestConfigProbe(unittest.TestCase):
-
     def test_single_file(self):
         config = probe(path=_dir("single-file"),
                        patterns=["stuff.yaml"])
 
         assert_that(config.key, is_("stuff-value"))
+        assert_that(config.fruits, is_(["Apple", "Orange"]))
 
     def test_single_file_with_namespace(self):
         config = probe(path=_dir("single-file-with-namespace"),
                        patterns=["(*).json"])
 
         assert_that(config.stuff.key, is_("stuff-value"))
+
+    def test_single_file_with_namespace_with_wrong_key(self):
+        config = probe(path=_dir("single-file-with-namespace"),
+                       patterns=["(*).json"])
+        assert_that(calling(self.config_with_inexistant_key).with_args(config),
+                    raises(KeyNotFoundWithinConfigProbePatterns))
+
+    def config_with_inexistant_key(self, config):
+        return config.stuff.key_inexistant
 
     def test_two_files_with_subdir_namespace(self):
         config = probe(path=_dir("two-files-with-subdir-namespace"),
