@@ -1,6 +1,6 @@
 import sys
 
-from config_probe.key_not_found_within_config_probe_patterns import KeyNotFoundWithinConfigProbePatterns
+from config_probe import ConfigNotFound
 
 
 class MunchWrapper(object):
@@ -11,7 +11,7 @@ class MunchWrapper(object):
         try:
             result = self.munch.__getattr__(item)
         except AttributeError as e:
-            raise KeyNotFoundWithinConfigProbePatterns(e)
+            raise ConfigNotFound(e)
         if type(result) in _get_primitive_type():
             return result
         return MunchWrapper(self.munch.__getattr__(item))

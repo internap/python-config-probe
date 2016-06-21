@@ -1,11 +1,16 @@
 import glob
 import json
-from config_probe.munch_wrapper import MunchWrapper
 
 import os
 import yaml
 from munch import munchify
 
+
+class ConfigNotFound(AttributeError):
+    pass
+
+
+from config_probe.munch_wrapper import MunchWrapper
 
 NAMESPACE_PLACEHOLDER = "(*)"
 
