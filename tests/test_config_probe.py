@@ -1,7 +1,7 @@
 import unittest
 
 import os
-/from config_probe import probe, fake_probe
+from config_probe import probe, fake_probe
 from config_probe.exceptions import ConfigNotFound
 from hamcrest import is_, assert_that
 
