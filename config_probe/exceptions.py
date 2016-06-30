@@ -1,0 +1,2 @@
+class ConfigNotFound(AttributeError):
+    pass

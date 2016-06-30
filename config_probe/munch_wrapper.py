@@ -1,6 +1,6 @@
 import sys
 
-from config_probe import ConfigNotFound
+from config_probe.exceptions import ConfigNotFound
 
 
 class MunchWrapper(object):
