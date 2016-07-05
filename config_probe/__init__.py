@@ -4,6 +4,7 @@ import json
 import os
 import yaml
 from munch import munchify
+from config_probe.munch_wrapper import MunchWrapper
 
 NAMESPACE_PLACEHOLDER = "(*)"
 
@@ -26,7 +27,7 @@ def probe(path, patterns):
 
             _add_to_configuration(config, namespaces, new_values)
 
-    return munchify(config)
+    return MunchWrapper(munchify(config))
 
 
 def fake_probe(content):

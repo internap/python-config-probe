@@ -2,22 +2,38 @@ import unittest
 
 import os
 from config_probe import probe, fake_probe
+from config_probe.exceptions import ConfigNotFound
 from hamcrest import is_, assert_that
 
 
 class TestConfigProbe(unittest.TestCase):
-
     def test_single_file(self):
         config = probe(path=_dir("single-file"),
                        patterns=["stuff.yaml"])
 
         assert_that(config.key, is_("stuff-value"))
+        assert_that(config.fruits, is_(["Apple", "Orange"]))
 
     def test_single_file_with_namespace(self):
         config = probe(path=_dir("single-file-with-namespace"),
                        patterns=["(*).json"])
 
         assert_that(config.stuff.key, is_("stuff-value"))
+
+    def test_single_file_with_namespace_with_wrong_key(self):
+        config = probe(path=_dir("single-file-with-namespace"),
+                       patterns=["(*).json"])
+
+        with self.assertRaises(ConfigNotFound):
+            print(config.stuff.key_inexistant)
+
+    def test_single_file_multiple_level_raising_or_not(self):
+        config = probe(path=_dir("multi-level-files"),
+                       patterns=["(*)/(*).yaml", "(*)/subdir/(*).yaml"])
+        assert_that(config.ns1.stuff.we.need.more.cowbell, is_("ok"))
+
+        with self.assertRaises(ConfigNotFound):
+            print(config.ns1.stuff.we.need.less.cowbell)
 
     def test_two_files_with_subdir_namespace(self):
         config = probe(path=_dir("two-files-with-subdir-namespace"),
