@@ -1,12 +1,12 @@
+import collections
 import glob
 import json
-
 import os
 
-import collections
 import yaml
-from munch import munchify
-from config_probe.munch_wrapper import MunchWrapper
+from munch import Munch, iteritems
+
+from config_probe.exceptions import ConfigNotFound
 
 NAMESPACE_PLACEHOLDER = "(*)"
 
@@ -29,11 +29,11 @@ def probe(path, patterns):
 
             _add_to_configuration(config, namespaces, new_values)
 
-    return MunchWrapper(munchify(config))
+    return _munchify(config)
 
 
 def fake_probe(content):
-    return munchify(content)
+    return _munchify(content)
 
 
 _parsers = {
@@ -71,3 +71,20 @@ def _update(config, values):
             _update(config[k], v)
         else:
             config[k] = v
+
+
+class _Munch(Munch):
+    def __getattr__(self, k):
+        try:
+            return super(_Munch, self).__getattr__(k)
+        except AttributeError as e:
+            raise ConfigNotFound(e)
+
+
+def _munchify(x):
+    if isinstance(x, dict):
+        return _Munch((k, _munchify(v)) for k,v in iteritems(x))
+    elif isinstance(x, (list, tuple)):
+        return type(x)(_munchify(v) for v in x)
+    else:
+        return x
