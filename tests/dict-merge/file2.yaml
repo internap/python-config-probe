@@ -1,0 +1,9 @@
+
+mydict:
+  common_key: "value2"
+  only_in_2: "value2"
+  subdict:
+    common_list:
+      - "a2"
+      - "b2"
+    only_in_2: "value2"
