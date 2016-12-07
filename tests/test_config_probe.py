@@ -79,6 +79,25 @@ class TestConfigProbe(unittest.TestCase):
                        patterns=["file2.yaml", "file1.yaml"])
         assert_that(config.key, is_("value1"))
 
+    def test_yaml_dict_are_merged_list_arent(self):
+        config = probe(path=_dir("dict-merge"),
+                       patterns=["file1.yaml", "file2.yaml"])
+        assert_that(config.mydict.common_key, is_("value2"))
+        assert_that(config.mydict.only_in_1, is_("value1"))
+        assert_that(config.mydict.only_in_2, is_("value2"))
+        assert_that(config.mydict.subdict.common_list, is_(["a2", "b2"]))
+        assert_that(config.mydict.subdict.only_in_1, is_("value1"))
+        assert_that(config.mydict.subdict.only_in_2, is_("value2"))
+
+        config = probe(path=_dir("dict-merge"),
+                       patterns=["file2.yaml", "file1.yaml"])
+        assert_that(config.mydict.common_key, is_("value1"))
+        assert_that(config.mydict.only_in_1, is_("value1"))
+        assert_that(config.mydict.only_in_2, is_("value2"))
+        assert_that(config.mydict.subdict.common_list, is_(["a1", "b1"]))
+        assert_that(config.mydict.subdict.only_in_1, is_("value1"))
+        assert_that(config.mydict.subdict.only_in_2, is_("value2"))
+
     def test_support_for_empty_files(self):
         probe(path=_dir("empty-files"), patterns=["*.*"])
 

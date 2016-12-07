@@ -2,6 +2,8 @@ import glob
 import json
 
 import os
+
+import collections
 import yaml
 from munch import munchify
 from config_probe.munch_wrapper import MunchWrapper
@@ -60,4 +62,12 @@ def _add_to_configuration(config, namespaces, new_values):
             current_level[ns] = {}
         current_level = current_level[ns]
 
-    current_level.update(new_values)
+    _update(current_level, new_values)
+
+
+def _update(config, values):
+    for k, v in values.items():
+        if k in config and isinstance(v, collections.Mapping):
+            _update(config[k], v)
+        else:
+            config[k] = v
