@@ -3,7 +3,7 @@ import unittest
 import os
 from config_probe import probe, fake_probe
 from config_probe.exceptions import ConfigNotFound
-from hamcrest import is_, assert_that
+from hamcrest import is_, assert_that, has_key
 
 
 class TestConfigProbe(unittest.TestCase):
@@ -98,6 +98,16 @@ class TestConfigProbe(unittest.TestCase):
         assert_that(config.mydict.subdict.only_in_1, is_("value1"))
         assert_that(config.mydict.subdict.only_in_2, is_("value2"))
 
+    def test_dict_should_behave_as_dict(self):
+        config = probe(path=_dir("single-file"),
+                       patterns=["(*).yaml"])
+
+        assert_that(config["stuff"]["key"], is_("stuff-value"))
+        assert_that(dict(config), has_key('stuff'))
+        assert_that(dict(**config), has_key('stuff'))
+        assert_that(dict(config.stuff), has_key('key'))
+        assert_that(dict(**config.stuff), has_key('key'))
+
     def test_support_for_empty_files(self):
         probe(path=_dir("empty-files"), patterns=["*.*"])
 
@@ -111,6 +121,9 @@ class TestConfigProbe(unittest.TestCase):
 
         assert_that(config.key, is_("value"))
         assert_that(config.key2[0].hey, is_("ho"))
+
+        with self.assertRaises(ConfigNotFound):
+            print(config.unknown)
 
 
 def _dir(name):
