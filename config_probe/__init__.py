@@ -18,7 +18,7 @@ def probe(path, patterns):
 
         glob_pattern = pattern.replace(NAMESPACE_PLACEHOLDER, "*")
         for config_file in glob.glob(os.path.join(path, glob_pattern)):
-            relevant_part_of_the_path = config_file[len(path) + 1:]
+            relevant_part_of_the_path = config_file if os.path.isabs(pattern) else config_file[len(path) + 1:]
             path_parts, ext = os.path.splitext(relevant_part_of_the_path)
             path_matchers, _ = os.path.splitext(pattern)
 
