@@ -111,6 +111,13 @@ class TestConfigProbe(unittest.TestCase):
     def test_support_for_empty_files(self):
         probe(path=_dir("empty-files"), patterns=["*.*"])
 
+    def test_support_absolute_paths_outside_base_dir(self):
+        config = probe(path=_dir("single-file-with-namespace"), patterns=[
+            "{}/(*)/(*)/stuff.yaml".format(os.path.dirname(__file__))
+        ])
+        assert_that(config['two-files-with-subdir-namespace'].ns1.key1, is_("stuff from ns1"))
+        assert_that(config['two-files-with-subdir-namespace'].ns2.key2, is_("stuff from ns2"))
+
     def test_fake_probe(self):
         config = fake_probe({
             "key": "value",
